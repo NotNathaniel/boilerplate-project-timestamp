@@ -28,31 +28,31 @@ app.get("/api/:date?", function (req, res) {
   const dateArg = req.params.date;
   let date;
 
-  // Handle empty date parameter, return current time
+  // Handle empty date parameter
   if (!dateArg) {
     date = new Date();
   } else {
-    // Handle valid Unix timestamp or ISO date string
+    // Check if the dateArg is numeric (Unix timestamp)
     if (!isNaN(dateArg)) {
-      // If dateArg is numeric, treat it as a Unix timestamp
       date = new Date(parseInt(dateArg));
     } else {
-      // Otherwise, parse it as an ISO string
+      // Otherwise, treat it as an ISO date string
       date = new Date(dateArg);
     }
   }
 
-  // Handle invalid date
+  // Check for invalid date
   if (isNaN(date.getTime())) {
     return res.json({ error: "Invalid Date" });
   }
 
-  // Return valid response
+  // Valid date response
   res.json({
     unix: date.getTime(),
     utc: date.toUTCString(),
   });
 });
+
 
 
 
