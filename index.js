@@ -8,7 +8,7 @@ var app = express();
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
 var cors = require('cors');
-app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
+app.use(cors({ optionsSuccessStatus: 200 }));  // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
@@ -24,21 +24,21 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get("/api/:date?", function (req, res) {
-  const dateArg = req.params.date;
-  let date;
 
-  // Handle empty date parameter
-  if (!dateArg) {
+// API endpoint for date handling
+app.get("/api/:date?", function (req, res) {
+  const dateParam = req.params.date;
+
+  let date;
+  // Handle empty date parameter (use current date)
+  if (!dateParam) {
     date = new Date();
+  } else if (!isNaN(dateParam)) {
+    // Handle Unix timestamp (number as string)
+    date = new Date(parseInt(dateParam));
   } else {
-    // Check if the dateArg is numeric (Unix timestamp)
-    if (!isNaN(dateArg)) {
-      date = new Date(parseInt(dateArg));
-    } else {
-      // Otherwise, treat it as an ISO date string
-      date = new Date(dateArg);
-    }
+    // Handle ISO format or other valid date strings
+    date = new Date(dateParam);
   }
 
   // Check for invalid date
@@ -46,14 +46,12 @@ app.get("/api/:date?", function (req, res) {
     return res.json({ error: "Invalid Date" });
   }
 
-  // Valid date response
+  // Return valid date response
   res.json({
     unix: date.getTime(),
-    utc: date.toUTCString(),
+    utc: date.toUTCString()
   });
 });
-
-
 
 
 
